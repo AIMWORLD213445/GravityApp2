@@ -1,6 +1,7 @@
 package com.epicodus.gravityapp;
 
 import android.opengl.GLES20;
+import android.opengl.Matrix;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -8,12 +9,15 @@ import java.nio.FloatBuffer;
 
 public class Triangle {
 
+    public float[] mMatrix = new float[16];
+
 
 
     private final String vertexCode =
-            "attribute vec4 vPosition;" +
-                    "void main() {" +
-                    " gl_Position = vPosition;" +
+            "uniform mat4 uMVPMatrix;" +
+                    "attribute vec4 vPosition;" +
+                    " void main() {" +
+                    "gl_position = uMVPMatrix * vPosition;" +
                     "}";
 
     private final String fragmentCode =
@@ -23,7 +27,9 @@ public class Triangle {
                     " gl_FragColor = vColor;" +
                     "}";
 
-    private FloatBuffer vertexBuffer;
+    private final FloatBuffer vertexBuffer;
+
+
 
 
     static final int COORDS_PER_VERTEX = 3;
@@ -40,6 +46,9 @@ public class Triangle {
     private  final int mProgram;
 
     public Triangle() {
+
+        Matrix.setIdentityM(mMatrix,0);
+
 
         ByteBuffer bb = ByteBuffer.allocateDirect(
                 triangleCoords.length * 4);
@@ -59,11 +68,16 @@ public class Triangle {
 
     private int mPositioner;
     private int mColorer;
+    private int mMVPMatrixer;
 
     private final int vertexCount = triangleCoords.length / COORDS_PER_VERTEX;
     private final int vertexStride = COORDS_PER_VERTEX * 4;
 
-    public void draw() {
+    public void draw(float[] mvpMatrix) {
+        mMVPMatrixer = GLES20.glGetUniformLocation(mProgram, "uMVPMatrix");
+        GLES20.glUniformMatrix4fv(mMVPMatrixer, 1, false, mvpMatrix, 0);
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, vertexCount);
+        GLES20.glDisableVertexAttribArray(mPositioner);
         GLES20.glUseProgram(mProgram);
         mPositioner = GLES20.glGetAttribLocation(mProgram, "vPosition");
         GLES20.glEnableVertexAttribArray(mPositioner);
