@@ -17,7 +17,7 @@ public class Triangle {
             "uniform mat4 uMVPMatrix;" +
                     "attribute vec4 vPosition;" +
                     " void main() {" +
-                    "gl_position = uMVPMatrix * vPosition;" +
+                    "gl_Position = uMVPMatrix * vPosition;" +
                     "}";
 
     private final String fragmentCode =

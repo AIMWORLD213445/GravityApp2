@@ -29,7 +29,7 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
         Matrix.multiplyMM(mMVPMatrix,0,mProjectionMatrix,0,mViewMatrix, 0);
         Matrix.multiplyMM(scratch,0, mMVPMatrix,0, mProjectionMatrix, 0);
         Matrix.translateM(mTriangle.mMatrix, 0, 0.5f,0f,0f);
-        mTriangle.draw(scratch);
+        mTriangle.draw(mMVPMatrix);
     }
     @Override
     public void onSurfaceChanged(GL10 gl10, int width, int height) {
