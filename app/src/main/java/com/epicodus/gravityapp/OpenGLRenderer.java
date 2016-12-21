@@ -15,6 +15,15 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
     private final float[] mProjectionMatrix = new float[16];
     private final float[] mViewMatrix = new float[16];
     private float[] mRotMatrix = new float[16];
+    public volatile float mAngle;
+
+    public float getAngle() {
+        return mAngle;
+    }
+
+    public void setAngle(float angle) {
+        mAngle=angle;
+    }
 
 
 
@@ -27,10 +36,10 @@ public class OpenGLRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onDrawFrame(GL10 gl10) {
         float[] scratch = new float[16];
-        long time = SystemClock.uptimeMillis() % 4000L;
-        float angle = 0.090f * ((int)time);
+//        long time = SystemClock.uptimeMillis() % 4000L;
+//        float angle = 0.090f * ((int)time);
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
-        Matrix.setRotateM(mRotMatrix,0,angle,0,0,-1.0f);
+        Matrix.setRotateM(mRotMatrix,0,mAngle,0,0,-1.0f);
         Matrix.setLookAtM(mViewMatrix,0,0,0,5f,0f,0f,0f,0f,1.0f,0.0f);
         Matrix.multiplyMM(mMVPMatrix,0,mProjectionMatrix,0,mViewMatrix, 0);
         Matrix.multiplyMM(scratch,0, mMVPMatrix,0, mRotMatrix, 0);
